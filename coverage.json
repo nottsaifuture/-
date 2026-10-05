@@ -1,0 +1,37 @@
+{
+  "retrieved_date": "2026-10-05",
+  "blog": "https://chaozmarket.blogspot.com/",
+  "scope": "2007–2010 public-feed catalogue with 476 original topic briefs; first six learning chapters focus on 2008, seventh compares selected evidence across all four years.",
+  "feed_reported_total": 476,
+  "unique_entries_catalogued": 476,
+  "years": {
+    "2007": 108,
+    "2008": 274,
+    "2009": 58,
+    "2010": 36
+  },
+  "2008_month_counts": {
+    "01": 26,
+    "02": 19,
+    "03": 21,
+    "04": 27,
+    "05": 24,
+    "06": 22,
+    "07": 27,
+    "08": 22,
+    "09": 17,
+    "10": 23,
+    "11": 24,
+    "12": 22
+  },
+  "method": "Four feed pages at start-index 1, 151, 301, 451; deduplicated by Blogger entry ID. Every title and selected passages inspected for an original short topic brief. Relevant passages selected for 21 lessons. Briefs highlight selected themes, not exhaustive full-article analysis. Topic tags are literal keyword matches. Supplementary primers and selected interview commentary are identified separately.",
+  "limitations": [
+    "Not an authenticated original publisher archive.",
+    "Deleted, private, unavailable, and unexposed posts cannot be counted.",
+    "Feed publication timestamps and dates in titles or URLs can differ.",
+    "Some Chinese glyphs and financial abbreviations are corrupted in the source.",
+    "Original full article bodies are not included in this study pack."
+  ],
+  "summary_count": 476,
+  "lesson_count": 21
+}

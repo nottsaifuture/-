@@ -1,0 +1,610 @@
+[
+  {
+    "lesson": "1-1",
+    "title": "Intel：虧損縮小，原本嘅理由成立嗎？",
+    "period": "2025 全年",
+    "known": "2026-01-22",
+    "checked": "2026-10-05",
+    "facts": [
+      "全年營收約 529 億美元，按公司四捨五入口徑與上年持平；GAAP 每股仍虧損 0.06 美元。"
+    ],
+    "connection": "如果你嘅假設係收入快速增長，虧損收窄唔能單獨證明呢個假設。比較自己原先寫低嘅條件，比為持倉辯護更有用。",
+    "question": "你原本要求收入高速增長，而新報告顯示持平。先做邊一步？",
+    "options": [
+      "因為已經買咗而堅持原判斷。",
+      "重新檢查增長假設與退出條件。",
+      "只看自己買入價。"
+    ],
+    "answer": 1,
+    "explanation": "新資料要對照原本理由；唔需要即刻判定買賣，但需要重新評估。",
+    "limits": "營收同比受 Altera 取消合併影響；公司好轉亦唔直接等於股價回報。",
+    "sources": [
+      {
+        "label": "Intel｜2025 全年業績（2026-01-22）",
+        "url": "https://www.intc.com/news-events/press-releases/detail/1759/intel-reports-fourth-quarter-and-full-year-2025-financial"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "1-2",
+    "title": "SVB：救存戶，唔等於救股東",
+    "period": "2023-03",
+    "known": "2023-03-12",
+    "checked": "2026-10-05",
+    "facts": [
+      "SVB 被接管後，美國當局宣布保護存戶；聲明明確指出股東與部分無抵押債權人不獲保護。"
+    ],
+    "connection": "「政府會救」唔係溝貨理由。先分清自己持有嘅係存款、股票定債券，各自法律與經濟地位不同。",
+    "question": "存戶獲保護，銀行普通股投資者可以推斷乜？",
+    "options": [
+      "股價一定回本。",
+      "所有金融產品都受保。",
+      "唔能推斷普通股亦獲保護。"
+    ],
+    "answer": 2,
+    "explanation": "保護對象不同。股票仍承受股東損失，唔好將政策標題當成攤低成本依據。",
+    "limits": "呢個係美國個案；唔能直接套用到香港存款保障或其他國家。",
+    "sources": [
+      {
+        "label": "FDIC｜2023-03-12 聯合聲明",
+        "url": "https://www.fdic.gov/news/press-releases/2023/pr23017.html"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "1-3",
+    "title": "Kraft Heinz：名家亦要面對減值",
+    "period": "2025 第二季",
+    "known": "2025 第二季財報；2025 年報再確認",
+    "checked": "2026-10-05",
+    "facts": [
+      "Berkshire 在 2025 年第二季為 Kraft Heinz 持股確認約 50 億美元稅前減值。"
+    ],
+    "connection": "欣賞名家可以幫你學研究，但唔能取代自己嘅風險檢查。減值提醒原先估值亦可能需要修正。",
+    "question": "呢個案例可以證明邊一點？",
+    "options": [
+      "名家投資都唔會錯。",
+      "名家持倉亦有風險，需要檢查。",
+      "所有食品公司都唔值得研究。"
+    ],
+    "answer": 1,
+    "explanation": "一項減值反映特定投資嘅問題，唔足以否定全部策略，亦唔支持盲目崇拜。",
+    "limits": "會計減值唔等於該日賣出嘅已實現損失；唔係整個 Berkshire 組合回報。",
+    "sources": [
+      {
+        "label": "Berkshire｜2025 年報（2026 年刊發）",
+        "url": "https://www.berkshirehathaway.com/2025ar/2025ar.pdf"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "2-1",
+    "title": "2025 美股：細股唔係永遠較強",
+    "period": "2025 全年",
+    "known": "2026 年發布嘅年度比較",
+    "checked": "2026-10-05",
+    "facts": [
+      "S&P DJI 報告指，2025 年標普 500 表現較中型股指數高約 10 個百分點，較小型股指數高約 12 個百分點。"
+    ],
+    "connection": "曹仁超有些年份偏向二線股，但相對強勢要用同一時段與基準重新比較，唔係固定買細股。",
+    "question": "今年發現大型股較強，應點處理以前偏好細股嘅規則？",
+    "options": [
+      "照舊認定細股一定跑贏。",
+      "用同時段數據重新檢查。",
+      "將不同年期回報直接混排。"
+    ],
+    "answer": 1,
+    "explanation": "相對排名會變。百分點差異唔係個別股票必然回報。",
+    "limits": "比較係指數，唔代表每隻大股都跑贏每隻細股；亦唔係未來預測。",
+    "sources": [
+      {
+        "label": "S&P DJI｜SPIVA 美國 2025 年底報告",
+        "url": "https://www.spglobal.com/spdji/en/spiva/article/spiva-us-year-end-2025/"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "2-2",
+    "title": "2025 港股急跌：一個收市價唔係均線",
+    "period": "2025-04-07",
+    "known": "2025-04-07 收市報道",
+    "checked": "2026-10-05",
+    "facts": [
+      "恒指當日收 19,828.30 點，較前一交易日跌 13.22%。"
+    ],
+    "connection": "呢個真實收市點只交代一日變化。要檢查 50 天與 250 天線，仍需要足夠交易日、相同價格口徑與預先設定嘅計法。",
+    "question": "只用呢一日資料，可否確認 50 天線已跌穿 250 天線？",
+    "options": [
+      "可以，大跌就一定係。",
+      "唔可以，要用完整日線計算。"
+    ],
+    "answer": 1,
+    "explanation": "單日跌幅唔等於均線交叉。缺數據時，應記錄未能確認，而唔係補一個訊號。",
+    "limits": "本案例冇重建實際交叉日期；唔宣稱均線當日發出買賣訊號。",
+    "sources": [
+      {
+        "label": "新華社香港記者｜2025-04-07 市場收市報道",
+        "url": "https://www.xinhuanet.com/gangao/20250407/cb0c4cca7e224ddbb272061ea89e3baf/c.html"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "2-3",
+    "title": "SVB：政策反應唔能確認新牛市",
+    "period": "2023-03",
+    "known": "2023-03-12",
+    "checked": "2026-10-05",
+    "facts": [
+      "美國當局在 SVB 與 Signature Bank 事件後公布存款保障措施。"
+    ],
+    "connection": "政策可以處理眼前危機，但「有救助」本身唔能回答企業盈利、信貸及價格趨勢是否持續改善。",
+    "question": "見到救助消息，可以立即得出新牛市開始嗎？",
+    "options": [
+      "可以，政府行動等於升市保證。",
+      "唔可以，仍要檢查持續轉勢證據。"
+    ],
+    "answer": 1,
+    "explanation": "政策事件同持續趨勢係兩個問題，唔應靠單一新聞定義牛熊。",
+    "limits": "唔推算事件後股價反彈幅度，亦唔宣稱當時已確認牛熊轉換。",
+    "sources": [
+      {
+        "label": "FDIC｜2023-03-12 聯合聲明",
+        "url": "https://www.fdic.gov/news/press-releases/2023/pr23017.html"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "3-1",
+    "title": "AI 同一主題，NVIDIA 與 Intel 業績不同",
+    "period": "NVIDIA FY2026／Intel 2025",
+    "known": "兩份公告均於 2026 年初公布",
+    "checked": "2026-10-05",
+    "facts": [
+      "NVIDIA FY2026 營收按年增 65%；Intel 2025 年營收按公司口徑持平。"
+    ],
+    "connection": "同屬晶片相關企業，盈利引擎、客戶同業務結構可以不同。先選行業，再研究公司，唔好買晒所有有 AI 標籤嘅股份。",
+    "question": "呢兩個數字最有用嘅用途係？",
+    "options": [
+      "證明所有晶片股回報相同。",
+      "直接比較股價升幅。",
+      "提醒要研究個別公司，而唔只買主題。"
+    ],
+    "answer": 2,
+    "explanation": "呢度係營收比較，唔係股價走勢；更唔係直接估值排名。",
+    "limits": "兩家公司財年結束日不同；營收增幅唔等於利潤、現金流或投資回報。",
+    "sources": [
+      {
+        "label": "NVIDIA｜FY2026 業績（2026-02-25）",
+        "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Fourth-Quarter-and-Fiscal-2026/"
+      },
+      {
+        "label": "Intel｜2025 全年業績（2026-01-22）",
+        "url": "https://www.intc.com/news-events/press-releases/detail/1759/intel-reports-fourth-quarter-and-full-year-2025-financial"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "3-2",
+    "title": "台積電：收入增長之外，檢查利潤率",
+    "period": "2025 全年",
+    "known": "2026 年刊發嘅 2025 年報",
+    "checked": "2026-10-05",
+    "facts": [
+      "以新台幣計，2025 年收入增 31.6%；毛利率 59.9%，上年為 56.1%。"
+    ],
+    "connection": "收入增長同毛利率改善，可以成為進一步研究線索。但仍要查資本開支、負債、客戶集中度及估值。",
+    "question": "毛利率升咗幾多？",
+    "options": [
+      "3.8 個百分點。",
+      "59.9%。",
+      "一定等於股價升幅。"
+    ],
+    "answer": 0,
+    "explanation": "59.9 − 56.1 = 3.8 個百分點。毛利率變化同股價回報並非同一數字。",
+    "limits": "唔同會計、產業模式唔宜直接套相同利潤率門檻；亦唔代表股份現價便宜。",
+    "sources": [
+      {
+        "label": "台積電｜2025 年報",
+        "url": "https://investor.tsmc.com/static/annualReports/2025/english/index.html"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "3-3",
+    "title": "Intel：虧損公司嘅 P/E 點讀？",
+    "period": "2025 全年",
+    "known": "2026-01-22",
+    "checked": "2026-10-05",
+    "facts": [
+      "Intel 全年 GAAP 每股虧損 0.06 美元；non-GAAP 每股盈利為 0.42 美元。"
+    ],
+    "connection": "你用邊個盈利口徑，會改變估值判斷。GAAP 虧損時，傳統正數市盈率比較唔適用；調整後盈利亦要查調節表。",
+    "question": "看到負 P/E，應該當成比 5 倍 P/E 更便宜嗎？",
+    "options": [
+      "應該，數字越小越好。",
+      "唔應該，先分清虧損與盈利口徑。"
+    ],
+    "answer": 1,
+    "explanation": "分母為負數時，唔能沿用正盈利公司嘅低 P/E 排名。",
+    "limits": "冇引用當日股價，亦冇計實際 P/E；non-GAAP 唔可以當成所有公司完全相同口徑。",
+    "sources": [
+      {
+        "label": "Intel｜2025 全年業績（2026-01-22）",
+        "url": "https://www.intc.com/news-events/press-releases/detail/1759/intel-reports-fourth-quarter-and-full-year-2025-financial"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "4-1",
+    "title": "SVB：止蝕指令唔係成交保證",
+    "period": "2023-03",
+    "known": "2023-04-28 官方檢討",
+    "checked": "2026-10-05",
+    "facts": [
+      "聯儲局檢討指 SVB 在 3 月 9 日流出超過 400 億美元存款，銀行翌日被關閉。"
+    ],
+    "connection": "極端事件提醒你，要分清退出觸發同實際可成交價格。SEC 亦說明止蝕市價單成交價可能偏離觸發價。",
+    "question": "設定止蝕價後，可以保證最多只蝕到嗰個價嗎？",
+    "options": [
+      "可以，設定即保證成交。",
+      "唔可以，流動性與價格跳動仍有影響。"
+    ],
+    "answer": 1,
+    "explanation": "止蝕係執行安排，唔係保險。限價止蝕亦有可能未能成交。",
+    "limits": "本案例唔重建任何個人實際落單；唔宣稱某個止蝕價在 SVB 曾可成交。",
+    "sources": [
+      {
+        "label": "聯儲局｜SVB 檢討（2023-04-28）",
+        "url": "https://www.federalreserve.gov/publications/2023-April-SVB-Key-Takeaways.htm"
+      },
+      {
+        "label": "SEC｜止蝕與限價止蝕投資者公告",
+        "url": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-15"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "4-2",
+    "title": "2025 港股急跌：三成倉同滿倉差幾多？",
+    "period": "2025-04-07",
+    "known": "2025-04-07 收市報道",
+    "checked": "2026-10-05",
+    "facts": [
+      "當日恒指跌 13.22%。以下用呢個市場變幅做倉位算術，唔係任何人真實帳戶。"
+    ],
+    "connection": "同一種市場跌幅，持倉比例會改變組合損失。計算要先交代其餘資產、費用與所持產品是否追蹤指數。",
+    "question": "假設十萬港元、三成完全跟恒指，其餘現金不變，損失約幾多？",
+    "options": [
+      "13,220 港元。",
+      "3,966 港元。",
+      "396.6 港元。"
+    ],
+    "answer": 1,
+    "explanation": "100,000 × 30% × 13.22% = 3,966。呢個係情境算術，未計費用及追蹤差異。",
+    "limits": "個股可以跌更多；現金及其他資產亦未必完全不變。",
+    "sources": [
+      {
+        "label": "新華社香港記者｜2025-04-07 市場收市報道",
+        "url": "https://www.xinhuanet.com/gangao/20250407/cb0c4cca7e224ddbb272061ea89e3baf/c.html"
+      }
+    ],
+    "calculation": {
+      "label": "教學假設：10 萬港元組合，套用已發生嘅指數跌幅",
+      "rows": [
+        [
+          "股票比例",
+          "估算組合損失"
+        ],
+        [
+          "30%",
+          "HK$3,966"
+        ],
+        [
+          "60%",
+          "HK$7,932"
+        ],
+        [
+          "100%",
+          "HK$13,220"
+        ]
+      ]
+    }
+  },
+  {
+    "lesson": "4-3",
+    "title": "Berkshire：龐大流動資金有自己嘅原因",
+    "period": "2025 年底",
+    "known": "2026 年刊發嘅 2025 年報",
+    "checked": "2026-10-05",
+    "facts": [
+      "保險及其他業務年底持有現金、等價物與美國國庫券約 3,690 億美元，已扣未交收購入應付款。"
+    ],
+    "connection": "流動性可以支持保險責任同投資機會。你嘅資金用途、年期與收入來源，未必同一家保險集團相同。",
+    "question": "見到呢個現金額，個人投資者應該直接照搬比例嗎？",
+    "options": [
+      "應該，名家比例適用所有人。",
+      "唔應該，先理解負債與資金用途。"
+    ],
+    "answer": 1,
+    "explanation": "現金部署要配合責任同目標；單一金額唔提供適合你嘅配置比例。",
+    "limits": "國庫券唔等同銀行活期；呢個範圍亦唔係單純整個集團所有現金。",
+    "sources": [
+      {
+        "label": "Berkshire｜2025 年報（2026 年刊發）",
+        "url": "https://www.berkshirehathaway.com/2025ar/2025ar.pdf"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "5-1",
+    "title": "NVIDIA 拆股：追蹤止蝕要用同一基準",
+    "period": "2024-06",
+    "known": "2024-05 宣布；6 月實施",
+    "checked": "2026-10-05",
+    "facts": [
+      "NVIDIA 進行一拆十，股份於 2024 年 6 月 10 日開始以拆股後口徑交易。"
+    ],
+    "connection": "拆股前後嘅股數、成本、高位同退出價需要一致調整。原始股價降低唔代表投資突然虧損九成。",
+    "question": "假設拆股前追蹤觸發價係 900 美元，一拆十後等價觸發價係？",
+    "options": [
+      "900 美元。",
+      "90 美元。",
+      "9 美元。"
+    ],
+    "answer": 1,
+    "explanation": "900 ÷ 10 = 90。呢個係口徑換算，唔係 NVIDIA 真實止蝕設定。",
+    "limits": "券商對待未成交單嘅做法可能不同，要核對；換算唔代表能以該價成交。",
+    "sources": [
+      {
+        "label": "NVIDIA｜2024 拆股 FAQ",
+        "url": "https://investor.nvidia.com/files/doc_downloads/2024/06/nvidia-2024-stock-split_faq_investors.pdf"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "5-2",
+    "title": "港交所：好業績唔等於達到交易目標",
+    "period": "2025 全年",
+    "known": "2026-02-26",
+    "checked": "2026-10-05",
+    "facts": [
+      "2025 年收入與其他收益增 30%；股東應佔溢利增 36%。"
+    ],
+    "connection": "如果你本來做短期反彈，業績好唔應成為無限期延後退出嘅藉口。要分清盈利數字、股價目標及策略年期。",
+    "question": "你嘅短線交易已到預先設定目標，見到好業績應點做？",
+    "options": [
+      "無條件將目標一直提高。",
+      "按原計劃處理，另作新研究先改策略。",
+      "將短線自動改成永遠持有。"
+    ],
+    "answer": 1,
+    "explanation": "調整策略需要新理由與完整計劃，唔係將到達目標後嘅決策交畀情緒。",
+    "limits": "案例冇提供真實買入、目標及成交價；公司盈利增幅唔等於股價升幅。",
+    "sources": [
+      {
+        "label": "港交所｜2025 全年業績（2026-02-26）",
+        "url": "https://www.hkex.com.hk/-/media/HKEX-Market/News/News-Release/2026/260226news/260226news_eng.pdf"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "5-3",
+    "title": "Intel：日誌要保留兩套盈利口徑",
+    "period": "2025 全年",
+    "known": "2026-01-22",
+    "checked": "2026-10-05",
+    "facts": [
+      "同一份公告嘅 GAAP EPS 為 −0.06 美元，non-GAAP EPS 為 0.42 美元。"
+    ],
+    "connection": "紙上日誌可以記：當時使用邊個數字、調整項目、原先假設同重估條件。之後唔可以事後換分母令原決定看似一直正確。",
+    "question": "最值得喺日誌補邊一欄？",
+    "options": [
+      "只記後來最好看嘅盈利數字。",
+      "記盈利口徑、資料日期及當時理由。"
+    ],
+    "answer": 1,
+    "explanation": "同一個案例可以有不同研究方法；先留清楚當時選擇，先能公平檢討。",
+    "limits": "只係教學日誌示範，唔係 Intel 或作者真實交易紀錄。",
+    "sources": [
+      {
+        "label": "Intel｜2025 全年業績（2026-01-22）",
+        "url": "https://www.intc.com/news-events/press-releases/detail/1759/intel-reports-fourth-quarter-and-full-year-2025-financial"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "6-1",
+    "title": "Meta：營業盈利同淨利唔係同一件事",
+    "period": "2025 全年",
+    "known": "2026-01-28",
+    "checked": "2026-10-05",
+    "facts": [
+      "Meta 營業盈利增 20%，淨利卻跌 3%；公告交代全年稅項包含稅法實施影響。"
+    ],
+    "connection": "好似「股票持倉跌四成」唔等於「全部資產跌四成」，唔同盈利層次亦唔能混用。先檢查數字範圍與橋接項目。",
+    "question": "淨利下跌，可以直接推斷營運同幅度轉差嗎？",
+    "options": [
+      "可以，兩者完全一樣。",
+      "唔可以，先看營業結果、稅項與其他因素。"
+    ],
+    "answer": 1,
+    "explanation": "數字都有範圍。先核對由營業盈利到淨利嘅差異，先能解讀變化。",
+    "limits": "案例唔推斷股價表現，亦唔將稅項影響一律視為可以忽略。",
+    "sources": [
+      {
+        "label": "Meta｜2025 全年業績（2026-01-28）",
+        "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "6-2",
+    "title": "恒指跌 13.22%，回本唔係升 13.22%",
+    "period": "2025-04-07",
+    "known": "2025-04-07 收市報道",
+    "checked": "2026-10-05",
+    "facts": [
+      "2025 年 4 月 7 日恒指跌 13.22%；以下只計由呢段跌幅回復原值所需升幅。"
+    ],
+    "connection": "回升係由較細基數計算，所以跌幅同回本幅度唔對稱。唔好將數學需要誤當成市場一定會回升。",
+    "question": "跌 13.22% 後，回復跌前水平約需要升幾多？",
+    "options": [
+      "13.22%。",
+      "15.23%。",
+      "26.44%。"
+    ],
+    "answer": 1,
+    "explanation": "13.22% ÷ (1 − 13.22%) ≈ 15.23%。呢個只係數學，唔係預測回本日期。",
+    "limits": "單日價格指數變幅唔係你嘅總回報，未計股息、費用與入市日。",
+    "sources": [
+      {
+        "label": "新華社香港記者｜2025-04-07 市場收市報道",
+        "url": "https://www.xinhuanet.com/gangao/20250407/cb0c4cca7e224ddbb272061ea89e3baf/c.html"
+      }
+    ],
+    "calculation": {
+      "label": "以跌前價值 100 作基準",
+      "rows": [
+        [
+          "階段",
+          "價值"
+        ],
+        [
+          "跌前",
+          "100"
+        ],
+        [
+          "跌 13.22% 後",
+          "86.78"
+        ],
+        [
+          "升 13.22% 後",
+          "約 98.25"
+        ],
+        [
+          "升約 15.23% 後",
+          "約 100"
+        ]
+      ]
+    }
+  },
+  {
+    "lesson": "6-3",
+    "title": "SPIVA：有盈利，仍可能輸畀基準",
+    "period": "2025 全年",
+    "known": "2026 年發布嘅年度報告",
+    "checked": "2026-10-05",
+    "facts": [
+      "S&P DJI 統計，2025 年約 79% 主動美國大型股基金跑輸標普 500。"
+    ],
+    "connection": "驗證方法唔只看賺錢與否，仲要有合適基準、費用同完整樣本。專業經理亦可能有正回報而落後指數。",
+    "question": "呢個數字可以證明曹仁超方法一定無效嗎？",
+    "options": [
+      "可以，直接證明。",
+      "唔可以，但提醒要作公平基準比較。"
+    ],
+    "answer": 1,
+    "explanation": "研究對象係一組美國基金，唔係作者帳戶。它提供比較方法，唔代替特定策略測試。",
+    "limits": "79% 指跑輸比例，唔係虧損比例；唔代表所有基金種類或所有年份。",
+    "sources": [
+      {
+        "label": "S&P DJI｜SPIVA 美國 2025 年底報告",
+        "url": "https://www.spglobal.com/spdji/en/spiva/article/spiva-us-year-end-2025/"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "7-1",
+    "title": "2026 港股成交：全年同單月可呈不同方向",
+    "period": "2026 年 1–8 月／8 月",
+    "known": "港交所 2026 年 8 月市場概況",
+    "checked": "2026-10-05",
+    "facts": [
+      "首八個月日均成交約 2,825 億港元，按年升 14%；8 月單月日均成交按年跌 17.5%。"
+    ],
+    "connection": "較長期增長與短期轉弱可以同時存在。四年文章出現不同部署時，亦要分清作者所看嘅時段同資料。",
+    "question": "呢兩個數字互相矛盾嗎？",
+    "options": [
+      "矛盾，必有一個錯。",
+      "未必；期間不同可以造成不同同比。"
+    ],
+    "answer": 1,
+    "explanation": "先對齊時段。年度方向唔等於每月方向，更唔等於每日價格訊號。",
+    "limits": "成交額係活動指標，唔係市場回報；來源頁會更新，需選回 2026 年 8 月。",
+    "sources": [
+      {
+        "label": "港交所｜每月市場概況（選 2026 年 8 月）",
+        "url": "https://www.hkex.com.hk/Market-Data/Statistics/Consolidated-Reports/HKEX-Monthly-Market-Highlights?sc_lang=zh-cn"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "7-2",
+    "title": "阿里巴巴：經營現金正，自由現金卻負",
+    "period": "截至 2026-03-31 財年",
+    "known": "2026-05-13",
+    "checked": "2026-10-05",
+    "facts": [
+      "FY2026 經營現金流約人民幣 762.13 億元；公司定義嘅自由現金流為流出 466.09 億元。公告將轉弱連結即時零售與雲基建投入。"
+    ],
+    "connection": "研究盈利要同時問現金點用。自由現金流負數可以源於投資支出，但需要查投入回報、資金來源及持續性，唔可以自動視為好或壞。",
+    "question": "應該直接因負自由現金流而判定造假嗎？",
+    "options": [
+      "應該。",
+      "唔應該；先核對調節、投入與資金壓力。"
+    ],
+    "answer": 1,
+    "explanation": "經營現金流同扣除投資後嘅現金衡量不同；調節表先能解釋差異。",
+    "limits": "自由現金流屬 non-GAAP，按公司定義；唔宜與其他公司未經調節直接比較。",
+    "sources": [
+      {
+        "label": "阿里巴巴｜FY2026 業績（2026-05-13），PDF 第 27 頁",
+        "url": "https://data.alibabagroup.com/ecms-files/1532295521/5b1cb883-8d00-4237-a148-6631cc12a5d2/Alibaba%20Group%20Announces%20March%20Quarter%202026%20and%20Fiscal%20Year%202026%20Results.pdf"
+      }
+    ],
+    "calculation": null
+  },
+  {
+    "lesson": "7-3",
+    "title": "Meta：2026 開支指引仍然係預測",
+    "period": "2026 開支展望",
+    "known": "2026-01-28",
+    "checked": "2026-10-05",
+    "facts": [
+      "Meta 當時預期 2026 資本開支連融資租賃本金為 1,150–1,350 億美元。"
+    ],
+    "connection": "記錄原先指引、發布日與後來修改，先能公平評估判斷。不能將原先區間喺事後換成實際結果，再聲稱一直準確。",
+    "question": "學習筆記應該點標示呢個數字？",
+    "options": [
+      "寫成已完成嘅全年開支。",
+      "寫成當時指引，並保留版本。"
+    ],
+    "answer": 1,
+    "explanation": "預測同結果要分欄。亦要看資本開支口徑有冇改變。",
+    "limits": "本案例展示 1 月指引，唔宣稱係最新指引或全年實績；唔據此推斷股價。",
+    "sources": [
+      {
+        "label": "Meta｜2025 全年業績（2026-01-28）",
+        "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx"
+      }
+    ],
+    "calculation": null
+  }
+]

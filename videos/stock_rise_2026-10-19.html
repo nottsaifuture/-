@@ -3,7 +3,14 @@
 <head>
 <meta charset="utf-8">
 <title>Tech Rebound Intro</title>
-<!-- 30s intro video source. Rendered frame-by-frame: window.render(seconds). -->
+<!-- 30s intro video source. Rendered frame-by-frame: window.render(seconds).
+     Shot list (camera moves from 影片運鏡 40 招):
+       0–4s   Title    · 焦點轉移 Rack Focus + 鏡頭前推 Dolly In → 變焦切換 Zoom Cut
+       4–11s  Nasdaq   · 跟拍鏡頭 Tracking on the price dot → 後拉揭露 Pull Back → 甩鏡切換 Whip Cut
+       11–15s Context  · 傾斜鏡頭 Dutch Tilt on last week → 鏡頭右移 Truck Right to today → 上下甩鏡切換 Tilt Cut
+       15–24s Movers   · 機位下降 Pedestal Down bar by bar → 後拉揭露 Pull Back → 旋轉切換 Spin Cut
+       24–28s Market   · 向右環繞 Arc Right → 前景擦鏡 Foreground Wipe
+       28–30s Outro    · 環繞升起 Orbit Rise -->
 <style>
   :root {
     --bg: #070b14; --panel: #0f1626; --ink: #f2f5fb; --muted: #8a96ad;
@@ -12,12 +19,12 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
   body { font-family: "DejaVu Sans", Arial, sans-serif; color: var(--ink); }
-  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden;
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; perspective: 1800px;
     background: radial-gradient(1400px 800px at 70% 20%, #12233f 0%, var(--bg) 60%); }
-  .grid { position: absolute; inset: 0; opacity: .12;
+  .grid { position: absolute; inset: -200px; opacity: .12;
     background-image: linear-gradient(#4da3ff 1px, transparent 1px), linear-gradient(90deg, #4da3ff 1px, transparent 1px);
     background-size: 96px 96px; }
-  .scene { position: absolute; inset: 0; opacity: 0; }
+  .scene { position: absolute; inset: 0; opacity: 0; transform-origin: 50% 50%; }
   .center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
   .kicker { font-size: 34px; letter-spacing: 10px; color: var(--accent); font-weight: bold; }
   .huge { font-size: 150px; font-weight: bold; line-height: 1.05; }
@@ -28,77 +35,88 @@
   .down { color: var(--down); }
   .bar-row { display: flex; align-items: center; height: 118px; margin: 14px 0; }
   .bar-name { width: 360px; font-size: 48px; font-weight: bold; text-align: right; padding-right: 36px; }
-  .bar { height: 84px; border-radius: 10px; background: linear-gradient(90deg, #14805f, var(--up)); }
+  .bar { height: 84px; border-radius: 10px; background: linear-gradient(90deg, #14805f, var(--up));
+    box-shadow: 0 0 40px rgba(34, 211, 155, .35); }
   .bar-val { font-size: 48px; font-weight: bold; color: var(--up); padding-left: 28px; white-space: nowrap; }
   .card { background: var(--panel); border: 2px solid #1d2a44; border-radius: 24px; padding: 48px 64px; width: 760px; }
+  .arrow { position: absolute; color: var(--up); font-weight: bold; }
+  #wipe { position: absolute; top: -100px; bottom: -100px; width: 900px; left: 0;
+    background: linear-gradient(90deg, transparent, #22d39b 30%, #1fbf8c 70%, transparent); transform: skewX(-12deg); }
   .ticker { position: absolute; left: 0; right: 0; bottom: 0; height: 72px; background: #0c1322;
     border-top: 2px solid #1d2a44; overflow: hidden; }
   .ticker-inner { position: absolute; top: 14px; white-space: nowrap; font-size: 34px; color: var(--muted); }
   .src { position: absolute; left: 64px; bottom: 96px; font-size: 22px; color: #5d6a82; }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
 </style>
 </head>
 <body>
 <div id="stage">
-  <div class="grid"></div>
+  <div class="grid" id="grid"></div>
+  <div id="arrows"></div>
 
-  <!-- Scene 1: title (0–4s) -->
+  <!-- Scene 1: title -->
   <div class="scene center" id="s1">
-    <div class="kicker">MONDAY · 19 OCT 2026</div>
-    <div class="huge" style="margin-top:28px">TECH ROARS<br><span class="up">BACK</span></div>
-    <div class="mid muted" style="margin-top:36px">The big rise on Wall Street today</div>
+    <div class="kicker" id="s1k">MONDAY · 19 OCT 2026</div>
+    <div class="huge" id="s1t" style="margin-top:28px">TECH ROARS<br><span class="up">BACK</span></div>
+    <div class="mid muted" id="s1s" style="margin-top:36px">The big rise on Wall Street today</div>
   </div>
 
-  <!-- Scene 2: Nasdaq hero with chart (4–11s) -->
+  <!-- Scene 2: Nasdaq, camera tracks the price dot then pulls back -->
   <div class="scene" id="s2">
-    <div style="position:absolute;left:120px;top:110px">
-      <div class="kicker">NASDAQ COMPOSITE</div>
-      <div class="huge" id="ndq" style="margin-top:18px">26,140</div>
-      <div class="big up" id="ndqPct" style="margin-top:6px">▲ +0.00%</div>
-    </div>
-    <svg id="chart" width="1920" height="1080" style="position:absolute;inset:0">
+    <svg width="1920" height="1080" style="position:absolute;inset:0;overflow:visible">
       <defs>
         <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="#22d39b" stop-opacity=".35"/>
           <stop offset="1" stop-color="#22d39b" stop-opacity="0"/>
         </linearGradient>
       </defs>
-      <path id="area" fill="url(#fill)"/>
-      <path id="line" fill="none" stroke="#22d39b" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
-      <circle id="dot" r="16" fill="#22d39b"/>
+      <g id="chartCam">
+        <path id="area" fill="url(#fill)"/>
+        <path id="line" fill="none" stroke="#22d39b" stroke-width="8" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+        <circle id="glow" fill="#22d39b" opacity=".25"/>
+        <circle id="dot" fill="#22d39b"/>
+      </g>
     </svg>
-  </div>
-
-  <!-- Scene 3: context (11–15s) -->
-  <div class="scene center" id="s3">
-    <div class="kicker">AFTER A ROUGH WEEK</div>
-    <div style="display:flex;gap:80px;margin-top:56px">
-      <div class="card"><div class="mid muted">Last week</div><div class="big down" style="margin-top:16px">▼ 4.5%</div><div class="mid muted" style="margin-top:12px">Nasdaq sell-off</div></div>
-      <div class="card"><div class="mid muted">Today</div><div class="big up" style="margin-top:16px">▲ 1.11%</div><div class="mid muted" style="margin-top:12px">AI confidence returns</div></div>
+    <div style="position:absolute;left:120px;top:110px">
+      <div class="kicker">NASDAQ COMPOSITE</div>
+      <div class="huge" id="ndq" style="margin-top:18px">26,140</div>
+      <div class="big up" id="ndqPct" style="margin-top:6px">▲ +0.00%</div>
     </div>
   </div>
 
-  <!-- Scene 4: top movers (15–24s) -->
-  <div class="scene" id="s4">
-    <div class="kicker" style="position:absolute;left:120px;top:90px">TODAY'S BIG RISERS</div>
-    <div style="position:absolute;left:120px;top:180px" id="bars"></div>
+  <!-- Scene 3: context, Dutch tilt on last week then truck right to today -->
+  <div class="scene" id="s3">
+    <div class="kicker" style="position:absolute;left:0;right:0;top:170px;text-align:center">AFTER A ROUGH WEEK</div>
+    <div class="card" id="cardL" style="position:absolute;left:160px;top:330px"><div class="mid muted">Last week</div><div class="big down" style="margin-top:16px">▼ 4.5%</div><div class="mid muted" style="margin-top:12px">Nasdaq sell-off</div></div>
+    <div class="card" id="cardR" style="position:absolute;left:1000px;top:330px"><div class="mid muted">Today</div><div class="big up" style="margin-top:16px">▲ 1.11%</div><div class="mid muted" style="margin-top:12px">AI confidence returns</div></div>
   </div>
 
-  <!-- Scene 5: other indexes (24–28s) -->
-  <div class="scene center" id="s5">
+  <!-- Scene 4: top movers, camera pedestals down bar by bar -->
+  <div class="scene" id="s4">
+    <div id="barCam" style="position:absolute;inset:0;transform-origin:0 0">
+      <div class="kicker" style="position:absolute;left:120px;top:90px">TODAY'S BIG RISERS</div>
+      <div style="position:absolute;left:120px;top:180px" id="bars"></div>
+    </div>
+  </div>
+
+  <!-- Scene 5: other indexes, arc right -->
+  <div class="scene center" id="s5" style="perspective:1400px">
     <div class="kicker">THE WIDER MARKET</div>
-    <div style="display:flex;gap:80px;margin-top:56px">
+    <div id="s5cards" style="display:flex;gap:80px;margin-top:56px">
       <div class="card"><div class="mid muted">S&amp;P 500</div><div class="big" style="margin-top:16px">7,690.73</div><div class="mid up" style="margin-top:12px">▲ +0.41%</div></div>
       <div class="card"><div class="mid muted">Dow Jones</div><div class="big" style="margin-top:16px">51,966.03</div><div class="mid down" style="margin-top:12px">▼ −0.07%</div></div>
     </div>
     <div class="mid muted" style="margin-top:56px">Chips &amp; tech led — the Dow sat it out</div>
   </div>
 
-  <!-- Scene 6: outro (28–30s) -->
+  <!-- Scene 6: outro, orbit rise -->
   <div class="scene center" id="s6">
     <div class="huge">The rebound<br><span class="up">is on.</span></div>
     <div class="mid muted" style="margin-top:40px">Full story next →</div>
   </div>
 
+  <div id="wipe"></div>
+  <div id="flash"></div>
   <div class="src" id="src">Sources: CNBC, TheStreet, Benzinga · closing / late-session figures · not investment advice</div>
   <div class="ticker"><div class="ticker-inner" id="tick"></div></div>
 </div>
@@ -113,12 +131,19 @@
   ];
   const TICK = "NASDAQ ▲ 1.11%   ·   S&P 500 ▲ 0.41%   ·   DOW ▼ 0.07%   ·   AMZN ▲ 4.95%   ·   MRVL ▲ ~7%   ·   SNDK ▲ ~6%   ·   PLTR ▲ 4.36%   ·   TSLA ▲ 3.74%   ·   ";
 
-  const bars = document.getElementById("bars");
+  const $ = id => document.getElementById(id);
   MOVERS.forEach(([n, , label], i) => {
-    bars.insertAdjacentHTML("beforeend",
+    $("bars").insertAdjacentHTML("beforeend",
       `<div class="bar-row" id="row${i}"><div class="bar-name">${n}</div><div class="bar" id="bar${i}"></div><div class="bar-val">${label}</div></div>`);
   });
-  document.getElementById("tick").textContent = TICK.repeat(4);
+  $("tick").textContent = TICK.repeat(4);
+
+  // Rising arrows for the background parallax layer (deterministic).
+  const ARROWS = Array.from({ length: 26 }, (_, i) => ({
+    x: (i * 337) % 1920, y0: (i * 211) % 1200, size: 24 + (i * 37) % 60, speed: 60 + (i * 53) % 120,
+  }));
+  ARROWS.forEach((a, i) => $("arrows").insertAdjacentHTML("beforeend",
+    `<div class="arrow" id="ar${i}" style="font-size:${a.size}px">▲</div>`));
 
   // Deterministic intraday path from Friday close (26,140.03) to today's close (26,430.89).
   const N = 120, pts = [];
@@ -131,54 +156,141 @@
 
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const ease = t => 1 - Math.pow(1 - clamp(t), 3);
+  const easeIn = t => Math.pow(clamp(t), 3);
+  const smooth = t => { t = clamp(t); return t * t * (3 - 2 * t); };
+  const lerp = (a, b, k) => a + (b - a) * k;
   const fmt = v => v.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  const prog = (t, a, b) => clamp((t - a) / (b - a));
 
-  // Opacity envelope: fade in over 0.5s, out over 0.4s.
-  function vis(t, a, b) {
-    return clamp((t - a) / 0.5) * clamp((b - t) / 0.4);
+  // Hard cuts between scenes; the motion and blur around each cut hide it.
+  const CUTS = [4, 11, 15, 24, 28];
+  function sceneOn(i, t) {
+    const a = i === 0 ? 0 : CUTS[i - 1], b = i === CUTS.length ? 99 : CUTS[i];
+    return t >= a && t < b;
   }
-  function show(id, t, a, b, rise = 40) {
-    const el = document.getElementById(id), o = vis(t, a, b);
-    el.style.opacity = o;
-    el.style.transform = `translateY(${(1 - ease((t - a) / 0.7)) * rise}px)`;
+  function cam(id, t, i, tf, blur = 0) {
+    const el = $(id);
+    el.style.opacity = sceneOn(i, t) ? (i === 0 ? clamp(t / 0.6) : 1) : 0;
+    el.style.transform = tf;
+    el.style.filter = blur > 0.2 ? `blur(${blur.toFixed(1)}px)` : "none";
   }
 
   window.render = function (t) {
-    show("s1", t, 0, 4);
-    show("s2", t, 4, 11);
-    show("s3", t, 11, 15);
-    show("s4", t, 15, 24);
-    show("s5", t, 24, 28);
-    show("s6", t, 28, 30.5);
-    document.getElementById("s1").style.transform += ` scale(${1 + t * 0.012})`;
+    // ── Scene 1: rack focus + dolly in, then zoom cut into "BACK".
+    {
+      const zc = easeIn(prog(t, 3.55, 4));
+      const s = lerp(0.92, 1.06, smooth(t / 3.55)) * (1 + zc * 7);
+      cam("s1", t, 0, `translateY(${zc * -520}px) scale(${s})`, zc * 30);
+      $("s1t").style.filter = `blur(${(10 * (1 - ease(prog(t, 0.2, 1.3)))).toFixed(1)}px)`;
+      $("s1k").style.filter = `blur(${(6 * ease(prog(t, 0.6, 1.3))).toFixed(1)}px)`;
+      $("s1k").style.opacity = 1 - 0.5 * ease(prog(t, 0.6, 1.3));
+      $("s1s").style.opacity = ease(prog(t, 1.4, 2.2));
+    }
 
-    // Nasdaq chart draws over 4.4s–9.5s.
-    const p = ease((t - 4.4) / 5.1);
-    const k = Math.max(1, Math.round(p * N));
-    const x0 = 120, x1 = 1800, yTop = 520, yBot = 960, lo = 26080, hi = 26460;
-    const X = i => x0 + (x1 - x0) * i / N;
-    const Y = v => yBot - (v - lo) / (hi - lo) * (yBot - yTop);
-    let d = "";
-    for (let i = 0; i <= k; i++) d += (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(pts[i]).toFixed(1);
-    document.getElementById("line").setAttribute("d", d);
-    document.getElementById("area").setAttribute("d", d + `L${X(k)} ${yBot + 60}L${x0} ${yBot + 60}Z`);
-    const dot = document.getElementById("dot");
-    dot.setAttribute("cx", X(k)); dot.setAttribute("cy", Y(pts[k]));
-    dot.setAttribute("r", 16 + Math.sin(t * 8) * 4);
-    const cur = p >= 1 ? 26430.89 : pts[k];
-    document.getElementById("ndq").textContent = p >= 1 ? "26,430.89" : fmt(cur);
-    const pct = (cur / 26140.03 - 1) * 100;
-    document.getElementById("ndqPct").textContent = `▲ +${(p >= 1 ? 1.11 : Math.max(0, pct)).toFixed(2)}%`;
+    // ── Scene 2: zoom cut lands, camera tracks the dot, pulls back, whip cut out.
+    {
+      const land = 1 - ease(prog(t, 4, 4.45));
+      const whip = easeIn(prog(t, 10.7, 11));
+      cam("s2", t, 1, `translateX(${whip * -1500}px) scale(${1 + land * 0.8})`, land * 26 + whip * 34);
 
-    // Bars grow one after another.
-    MOVERS.forEach(([, v], i) => {
-      const g = ease((t - 15.6 - i * 0.55) / 1.1);
-      document.getElementById("bar" + i).style.width = (g * v / 7 * 1050) + "px";
-      document.getElementById("row" + i).style.opacity = clamp((t - 15.4 - i * 0.55) / 0.4);
+      const p = ease((t - 4.2) / 5.0);
+      const k = Math.max(1, Math.round(p * N));
+      const x0 = 120, x1 = 1800, yTop = 520, yBot = 960, lo = 26080, hi = 26460;
+      const X = i => x0 + (x1 - x0) * i / N;
+      const Y = v => yBot - (v - lo) / (hi - lo) * (yBot - yTop);
+      let d = "";
+      for (let i = 0; i <= k; i++) d += (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(pts[i]).toFixed(1);
+      $("line").setAttribute("d", d);
+      $("area").setAttribute("d", d + `L${X(k)} ${yBot + 400}L${x0} ${yBot + 400}Z`);
+
+      // Tracking: keep the dot at screen (1150, 700) while zoomed; pull back reveals the whole day.
+      const px = X(k), py = Y(pts[k]);
+      const pb = smooth(prog(t, 9.0, 10.3));
+      const s = lerp(2.3, 1, pb);
+      const qx = lerp(1150, px, pb), qy = lerp(700, py, pb);
+      $("chartCam").setAttribute("transform", `translate(${qx - s * px} ${qy - s * py}) scale(${s})`);
+      const r = (14 + Math.sin(t * 8) * 3) / s;
+      $("dot").setAttribute("cx", px); $("dot").setAttribute("cy", py); $("dot").setAttribute("r", r);
+      $("glow").setAttribute("cx", px); $("glow").setAttribute("cy", py); $("glow").setAttribute("r", r * 2.6);
+
+      const cur = p >= 1 ? 26430.89 : pts[k];
+      $("ndq").textContent = p >= 1 ? "26,430.89" : fmt(cur);
+      const pct = (cur / 26140.03 - 1) * 100;
+      $("ndqPct").textContent = `▲ +${(p >= 1 ? 1.11 : Math.max(0, pct)).toFixed(2)}%`;
+    }
+
+    // ── Scene 3: whip lands, Dutch tilt on last week, truck right to today (horizon levels), tilt cut out.
+    {
+      const land = 1 - ease(prog(t, 11, 11.35));
+      const out = easeIn(prog(t, 14.7, 15));
+      const tr = smooth(prog(t, 12.7, 13.7));
+      const fx = lerp(540, 1380, tr);                       // focus x: left card → right card
+      const s = lerp(1.25, 1.12, tr) - smooth(prog(t, 14, 14.7)) * 0.12;
+      const fxPull = lerp(fx, 960, smooth(prog(t, 14, 14.7)));
+      const roll = lerp(-7, 0, tr);
+      cam("s3", t, 2,
+        `translateY(${out * -1300}px) translateX(${land * 1500 + (960 - fxPull) * s}px) rotate(${roll}deg) scale(${s})`,
+        land * 34 + out * 34);
+    }
+
+    // ── Scene 4: tilt cut lands, pedestal down through each riser, pull back, spin cut out.
+    {
+      const land = 1 - ease(prog(t, 15, 15.35));
+      const spin = easeIn(prog(t, 23.6, 24));
+      cam("s4", t, 3, `translateY(${land * 1300}px) rotate(${spin * 120}deg) scale(${1 + spin * 0.6})`, land * 34 + spin * 30);
+
+      const rowY = i => 180 + 14 + i * 146 + 59;
+      const step = 1.0, start = 15.5;
+      const f = clamp((t - start - 0.4) / step, 0, MOVERS.length - 1);
+      const fi = Math.floor(f), ff = smooth(f - fi);
+      const fy = fi >= MOVERS.length - 1 ? rowY(fi) : lerp(rowY(fi), rowY(fi + 1), ff);
+      const pb = smooth(prog(t, 21.2, 22.4));
+      const s = lerp(1.2, 1, pb);
+      const qx = lerp(960, 900, pb), qy = lerp(540, fy, pb);
+      $("barCam").style.transform = `translate(${qx - s * 900}px, ${qy - s * fy}px) scale(${s})`;
+      MOVERS.forEach(([, v], i) => {
+        const g = ease((t - start - i * step) / 0.9);
+        $("bar" + i).style.width = (g * v / 7 * 980) + "px";
+        $("row" + i).style.opacity = clamp((t - start + 0.2 - i * step) / 0.4);
+      });
+    }
+
+    // ── Scene 5: spin cut lands, slow arc right around the cards.
+    {
+      const land = 1 - ease(prog(t, 24, 24.4));
+      const arc = smooth(prog(t, 24, 28));
+      cam("s5", t, 4, `rotate(${land * -120}deg) scale(${1 + land * 0.6})`, land * 30);
+      $("s5cards").style.transform = `rotateY(${lerp(12, -8, arc)}deg) translateX(${lerp(-30, 30, arc)}px)`;
+    }
+
+    // ── Foreground wipe across the 28s cut.
+    {
+      const w = prog(t, 27.6, 28.4);
+      $("wipe").style.transform = `translateX(${lerp(-1100, 2200, w)}px) skewX(-12deg)`;
+      $("wipe").style.opacity = w > 0 && w < 1 ? 1 : 0;
+    }
+
+    // ── Scene 6: orbit rise on the closing line.
+    {
+      const o = ease(prog(t, 28, 29.6));
+      cam("s6", t, 5, `translateY(${lerp(160, 0, o)}px) rotateX(${lerp(28, 0, o)}deg) rotateY(${lerp(-40, 0, o)}deg) scale(${lerp(0.8, 1, o)})`);
+    }
+
+    // Parallax background: grid drifts slowly, arrows float up faster.
+    $("grid").style.transform = `translate(${(-t * 18) % 96}px, ${(-t * 30) % 96}px)`;
+    const arrowsOn = t < 4 || t >= 28 ? 1 : 0.35;
+    ARROWS.forEach((a, i) => {
+      const el = $("ar" + i), y = ((a.y0 - t * a.speed) % 1250 + 1250) % 1250 - 100;
+      el.style.left = a.x + "px"; el.style.top = y + "px";
+      el.style.opacity = 0.18 * arrowsOn;
     });
 
-    document.getElementById("tick").style.left = (-t * 140) + "px";
-    document.getElementById("src").style.opacity = clamp((t - 4) / 0.5) * 0.9;
+    // Flash on the zoom cut and the spin cut.
+    const fl = Math.max(1 - Math.abs(t - 4) / 0.12, 1 - Math.abs(t - 24) / 0.12, 0);
+    $("flash").style.opacity = fl * 0.35;
+
+    $("tick").style.left = (-t * 140) + "px";
+    $("src").style.opacity = clamp((t - 4.5) / 0.5) * 0.9;
   };
   window.render(0);
 </script>

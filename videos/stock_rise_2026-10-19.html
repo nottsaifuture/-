@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tech Rebound Intro</title>
+<!-- 30s intro video source. Rendered frame-by-frame: window.render(seconds). -->
+<style>
+  :root {
+    --bg: #070b14; --panel: #0f1626; --ink: #f2f5fb; --muted: #8a96ad;
+    --up: #22d39b; --down: #ff5d6c; --accent: #4da3ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+  body { font-family: "DejaVu Sans", Arial, sans-serif; color: var(--ink); }
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden;
+    background: radial-gradient(1400px 800px at 70% 20%, #12233f 0%, var(--bg) 60%); }
+  .grid { position: absolute; inset: 0; opacity: .12;
+    background-image: linear-gradient(#4da3ff 1px, transparent 1px), linear-gradient(90deg, #4da3ff 1px, transparent 1px);
+    background-size: 96px 96px; }
+  .scene { position: absolute; inset: 0; opacity: 0; }
+  .center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .kicker { font-size: 34px; letter-spacing: 10px; color: var(--accent); font-weight: bold; }
+  .huge { font-size: 150px; font-weight: bold; line-height: 1.05; }
+  .big { font-size: 96px; font-weight: bold; }
+  .mid { font-size: 52px; }
+  .muted { color: var(--muted); }
+  .up { color: var(--up); }
+  .down { color: var(--down); }
+  .bar-row { display: flex; align-items: center; height: 118px; margin: 14px 0; }
+  .bar-name { width: 360px; font-size: 48px; font-weight: bold; text-align: right; padding-right: 36px; }
+  .bar { height: 84px; border-radius: 10px; background: linear-gradient(90deg, #14805f, var(--up)); }
+  .bar-val { font-size: 48px; font-weight: bold; color: var(--up); padding-left: 28px; white-space: nowrap; }
+  .card { background: var(--panel); border: 2px solid #1d2a44; border-radius: 24px; padding: 48px 64px; width: 760px; }
+  .ticker { position: absolute; left: 0; right: 0; bottom: 0; height: 72px; background: #0c1322;
+    border-top: 2px solid #1d2a44; overflow: hidden; }
+  .ticker-inner { position: absolute; top: 14px; white-space: nowrap; font-size: 34px; color: var(--muted); }
+  .src { position: absolute; left: 64px; bottom: 96px; font-size: 22px; color: #5d6a82; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="grid"></div>
+
+  <!-- Scene 1: title (0–4s) -->
+  <div class="scene center" id="s1">
+    <div class="kicker">MONDAY · 19 OCT 2026</div>
+    <div class="huge" style="margin-top:28px">TECH ROARS<br><span class="up">BACK</span></div>
+    <div class="mid muted" style="margin-top:36px">The big rise on Wall Street today</div>
+  </div>
+
+  <!-- Scene 2: Nasdaq hero with chart (4–11s) -->
+  <div class="scene" id="s2">
+    <div style="position:absolute;left:120px;top:110px">
+      <div class="kicker">NASDAQ COMPOSITE</div>
+      <div class="huge" id="ndq" style="margin-top:18px">26,140</div>
+      <div class="big up" id="ndqPct" style="margin-top:6px">▲ +0.00%</div>
+    </div>
+    <svg id="chart" width="1920" height="1080" style="position:absolute;inset:0">
+      <defs>
+        <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#22d39b" stop-opacity=".35"/>
+          <stop offset="1" stop-color="#22d39b" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path id="area" fill="url(#fill)"/>
+      <path id="line" fill="none" stroke="#22d39b" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle id="dot" r="16" fill="#22d39b"/>
+    </svg>
+  </div>
+
+  <!-- Scene 3: context (11–15s) -->
+  <div class="scene center" id="s3">
+    <div class="kicker">AFTER A ROUGH WEEK</div>
+    <div style="display:flex;gap:80px;margin-top:56px">
+      <div class="card"><div class="mid muted">Last week</div><div class="big down" style="margin-top:16px">▼ 4.5%</div><div class="mid muted" style="margin-top:12px">Nasdaq sell-off</div></div>
+      <div class="card"><div class="mid muted">Today</div><div class="big up" style="margin-top:16px">▲ 1.11%</div><div class="mid muted" style="margin-top:12px">AI confidence returns</div></div>
+    </div>
+  </div>
+
+  <!-- Scene 4: top movers (15–24s) -->
+  <div class="scene" id="s4">
+    <div class="kicker" style="position:absolute;left:120px;top:90px">TODAY'S BIG RISERS</div>
+    <div style="position:absolute;left:120px;top:180px" id="bars"></div>
+  </div>
+
+  <!-- Scene 5: other indexes (24–28s) -->
+  <div class="scene center" id="s5">
+    <div class="kicker">THE WIDER MARKET</div>
+    <div style="display:flex;gap:80px;margin-top:56px">
+      <div class="card"><div class="mid muted">S&amp;P 500</div><div class="big" style="margin-top:16px">7,690.73</div><div class="mid up" style="margin-top:12px">▲ +0.41%</div></div>
+      <div class="card"><div class="mid muted">Dow Jones</div><div class="big" style="margin-top:16px">51,966.03</div><div class="mid down" style="margin-top:12px">▼ −0.07%</div></div>
+    </div>
+    <div class="mid muted" style="margin-top:56px">Chips &amp; tech led — the Dow sat it out</div>
+  </div>
+
+  <!-- Scene 6: outro (28–30s) -->
+  <div class="scene center" id="s6">
+    <div class="huge">The rebound<br><span class="up">is on.</span></div>
+    <div class="mid muted" style="margin-top:40px">Full story next →</div>
+  </div>
+
+  <div class="src" id="src">Sources: CNBC, TheStreet, Benzinga · closing / late-session figures · not investment advice</div>
+  <div class="ticker"><div class="ticker-inner" id="tick"></div></div>
+</div>
+
+<script>
+  const MOVERS = [
+    ["Marvell",  7.0, "≈ +7%"],
+    ["SanDisk",  6.0, "≈ +6%"],
+    ["Amazon",   4.95, "+4.95%"],
+    ["Palantir", 4.36, "+4.36%"],
+    ["Tesla",    3.74, "+3.74%"],
+  ];
+  const TICK = "NASDAQ ▲ 1.11%   ·   S&P 500 ▲ 0.41%   ·   DOW ▼ 0.07%   ·   AMZN ▲ 4.95%   ·   MRVL ▲ ~7%   ·   SNDK ▲ ~6%   ·   PLTR ▲ 4.36%   ·   TSLA ▲ 3.74%   ·   ";
+
+  const bars = document.getElementById("bars");
+  MOVERS.forEach(([n, , label], i) => {
+    bars.insertAdjacentHTML("beforeend",
+      `<div class="bar-row" id="row${i}"><div class="bar-name">${n}</div><div class="bar" id="bar${i}"></div><div class="bar-val">${label}</div></div>`);
+  });
+  document.getElementById("tick").textContent = TICK.repeat(4);
+
+  // Deterministic intraday path from Friday close (26,140.03) to today's close (26,430.89).
+  const N = 120, pts = [];
+  for (let i = 0; i <= N; i++) {
+    const x = i / N;
+    const trend = 26140 + (26431 - 26140) * Math.pow(x, 0.8);
+    const wobble = Math.sin(i * 0.55) * 22 + Math.sin(i * 1.7) * 9;
+    pts.push(i === N ? 26430.89 : trend + wobble * (1 - x * 0.6));
+  }
+
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const ease = t => 1 - Math.pow(1 - clamp(t), 3);
+  const fmt = v => v.toLocaleString("en-US", { maximumFractionDigits: 0 });
+
+  // Opacity envelope: fade in over 0.5s, out over 0.4s.
+  function vis(t, a, b) {
+    return clamp((t - a) / 0.5) * clamp((b - t) / 0.4);
+  }
+  function show(id, t, a, b, rise = 40) {
+    const el = document.getElementById(id), o = vis(t, a, b);
+    el.style.opacity = o;
+    el.style.transform = `translateY(${(1 - ease((t - a) / 0.7)) * rise}px)`;
+  }
+
+  window.render = function (t) {
+    show("s1", t, 0, 4);
+    show("s2", t, 4, 11);
+    show("s3", t, 11, 15);
+    show("s4", t, 15, 24);
+    show("s5", t, 24, 28);
+    show("s6", t, 28, 30.5);
+    document.getElementById("s1").style.transform += ` scale(${1 + t * 0.012})`;
+
+    // Nasdaq chart draws over 4.4s–9.5s.
+    const p = ease((t - 4.4) / 5.1);
+    const k = Math.max(1, Math.round(p * N));
+    const x0 = 120, x1 = 1800, yTop = 520, yBot = 960, lo = 26080, hi = 26460;
+    const X = i => x0 + (x1 - x0) * i / N;
+    const Y = v => yBot - (v - lo) / (hi - lo) * (yBot - yTop);
+    let d = "";
+    for (let i = 0; i <= k; i++) d += (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(pts[i]).toFixed(1);
+    document.getElementById("line").setAttribute("d", d);
+    document.getElementById("area").setAttribute("d", d + `L${X(k)} ${yBot + 60}L${x0} ${yBot + 60}Z`);
+    const dot = document.getElementById("dot");
+    dot.setAttribute("cx", X(k)); dot.setAttribute("cy", Y(pts[k]));
+    dot.setAttribute("r", 16 + Math.sin(t * 8) * 4);
+    const cur = p >= 1 ? 26430.89 : pts[k];
+    document.getElementById("ndq").textContent = p >= 1 ? "26,430.89" : fmt(cur);
+    const pct = (cur / 26140.03 - 1) * 100;
+    document.getElementById("ndqPct").textContent = `▲ +${(p >= 1 ? 1.11 : Math.max(0, pct)).toFixed(2)}%`;
+
+    // Bars grow one after another.
+    MOVERS.forEach(([, v], i) => {
+      const g = ease((t - 15.6 - i * 0.55) / 1.1);
+      document.getElementById("bar" + i).style.width = (g * v / 7 * 1050) + "px";
+      document.getElementById("row" + i).style.opacity = clamp((t - 15.4 - i * 0.55) / 0.4);
+    });
+
+    document.getElementById("tick").style.left = (-t * 140) + "px";
+    document.getElementById("src").style.opacity = clamp((t - 4) / 0.5) * 0.9;
+  };
+  window.render(0);
+</script>
+</body>
+</html>

@@ -4,13 +4,12 @@ set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 CFG="$HOME/.config/my-typeless"
-MODEL_URL="https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bin"
 
 command -v brew >/dev/null || { echo "請先裝 Homebrew：https://brew.sh"; exit 1; }
 
-echo "▶ 安裝 Hammerspoon、sox、whisper.cpp、jq"
+echo "▶ 安裝 Hammerspoon、sox、jq"
 brew install --cask hammerspoon
-brew install sox whisper-cpp jq
+brew install sox jq
 
 mkdir -p "$CFG" "$HOME/.hammerspoon"
 cp "$HERE/../prompt.md" "$CFG/prompt.md"
@@ -20,15 +19,11 @@ INIT="$HOME/.hammerspoon/init.lua"
 touch "$INIT"
 grep -q 'require("typeless")' "$INIT" || echo 'typeless = require("typeless")' >> "$INIT"
 
-if [ ! -f "$CFG/ggml-large-v3-turbo.bin" ]; then
-  echo "▶ 下載語音模型（約 1.6GB，第一次先要）"
-  curl -L --fail -o "$CFG/ggml-large-v3-turbo.bin" "$MODEL_URL"
-fi
-
-if [ ! -f "$CFG/anthropic_key" ]; then
-  read -r -s -p "▶ 貼上你嘅 Anthropic API key（sk-ant-...），然後揿 Enter：" KEY; echo
-  printf '%s' "$KEY" > "$CFG/anthropic_key"
-  chmod 600 "$CFG/anthropic_key"
+if [ ! -f "$CFG/gemini_key" ]; then
+  echo "▶ 去 https://aistudio.google.com/apikey 揿「Create API key」"
+  read -r -s -p "  將條 key 貼喺度，然後揿 Enter：" KEY; echo
+  printf '%s' "$KEY" > "$CFG/gemini_key"
+  chmod 600 "$CFG/gemini_key"
 fi
 
 open -a Hammerspoon

@@ -4,22 +4,19 @@
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-KEY="${ANTHROPIC_API_KEY:-$(cat "$HOME/.config/my-typeless/anthropic_key")}"
+KEY="${GEMINI_API_KEY:-$(cat "$HOME/.config/my-typeless/gemini_key")}"
+MODEL="${GEMINI_MODEL:-gemini-3.8-flash}"
 if [ "${2:-口語}" = "書面語" ]; then
   STYLE="將廣東話口語改寫成通順嘅書面中文；講英文就寫正式英文"
 else
-  STYLE="保留講者原本用嘅語言同口吻；講廣東話就寫返廣東話口語（例如「係」「唔」「嘅」），講英文就寫英文"
+  STYLE="保留講者原本用嘅語言同口吻；講廣東話就寫返廣東話口語，講英文就寫英文"
 fi
 SYSTEM="$(sed "s/{{STYLE}}/$STYLE/" "$HERE/prompt.md")"
 
 jq -n --arg sys "$SYSTEM" --arg text "$1" '{
-  model: "claude-opus-5-5", max_tokens: 8000,
-  output_config: {effort: "low"}, fallbacks: "default",
-  system: $sys,
-  messages: [{role: "user", content: ("<transcript>\n" + $text + "\n</transcript>")}]
-}' | curl -sS https://api.anthropic.com/v1/messages \
+  system_instruction: {parts: [{text: $sys}]},
+  contents: [{role: "user", parts: [{text: ("<transcript>\n" + $text + "\n</transcript>")}]}]
+}' | curl -sS "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent" \
   -H "content-type: application/json" \
-  -H "x-api-key: $KEY" \
-  -H "anthropic-version: 2026-10-21" \
-  -H "anthropic-beta: server-side-fallback-2026-07-01" \
-  --data-binary @- | jq -r 'if .type == "error" then "錯誤：" + .error.message else ([.content[] | select(.type == "text") | .text] | join("")) end'
+  -H "x-goog-api-key: $KEY" \
+  --data-binary @- | jq -r 'if .error then "錯誤：" + .error.message else ([.candidates[0].content.parts[] | select(.thought != true) | .text] | join("")) end'

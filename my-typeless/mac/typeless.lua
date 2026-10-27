@@ -1,5 +1,5 @@
--- My Typeless for Mac (Hammerspoon)
--- 揿一下 Fn 開始錄音，再揿一下 Fn 停止 → 轉文字 → Claude 整理 → 自動貼落游標位置。
+-- My Typeless for Mac (Hammerspoon + Gemini)
+-- 揿一下 Fn 開始錄音，再揿一下 Fn 停止 → Gemini 聽錄音同時整理 → 自動貼落游標位置。
 -- 錄緊音嗰陣揿 Esc 可以取消。
 
 local M = {}
@@ -8,28 +8,14 @@ local HOME = os.getenv("HOME")
 local CFG_DIR = HOME .. "/.config/my-typeless"
 
 M.config = {
-  -- 錄音（sox）
-  rec = "/opt/homebrew/bin/rec",
-
-  -- 語音轉文字："local" = 本機 whisper.cpp（免費、離線）；"cloud" = OpenAI 格式嘅 API（例如 Groq，快好多）
-  stt = "local",
-  whisperBin = "/opt/homebrew/bin/whisper-cli",
-  whisperModel = CFG_DIR .. "/ggml-large-v3-turbo.bin",
-  language = "auto", -- 淨係講廣東話可以改做 "yue"
-  whisperPrompt = "以下係廣東話同 English 夾雜嘅說話，用繁體中文。",
-  cloudUrl = "https://api.groq.com/openai/v1/audio/transcriptions",
-  cloudModel = "whisper-large-v3",
-
-  -- Claude 整理
-  claudeModel = "claude-opus-5-5", -- 想再快啲／平啲可以改做 "claude-haiku-5-5"
-  effort = "low",
+  rec = "/opt/homebrew/bin/rec", -- 錄音（sox）
+  model = "gemini-3.8-flash", -- 撞到免費額度上限可以改做 "gemini-3.5-flash-lite"
   style = "口語", -- "口語" = 保留廣東話；"書面語" = 轉做書面中文
-
   autoPaste = true, -- false 就淨係抄落剪貼簿
 }
 
 local STYLES = {
-  ["口語"] = "保留講者原本用嘅語言同口吻；講廣東話就寫返廣東話口語（例如「係」「唔」「嘅」），講英文就寫英文",
+  ["口語"] = "保留講者原本用嘅語言同口吻；講廣東話就寫返廣東話口語，講英文就寫英文",
   ["書面語"] = "將廣東話口語改寫成通順嘅書面中文；講英文就寫正式英文",
 }
 
@@ -37,11 +23,12 @@ local state = "idle" -- idle | recording | processing
 local recTask, recStart
 local wavPath = CFG_DIR .. "/last.wav"
 
-local function readFile(path)
-  local f = io.open(path, "r")
+local function readFile(path, binary)
+  local f = io.open(path, binary and "rb" or "r")
   if not f then return nil end
   local s = f:read("*a")
   f:close()
+  if binary then return s end
   return (s:gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
@@ -65,7 +52,7 @@ local function fail(msg)
 end
 
 local function deliver(text)
-  if text == "" then return setStatus("idle") end
+  if text == "" then return fail("聽唔到嘢") end
   hs.pasteboard.setContents(text)
   if M.config.autoPaste then
     hs.eventtap.keyStroke({ "cmd" }, "v", 0)
@@ -75,91 +62,50 @@ local function deliver(text)
   setStatus("idle")
 end
 
--- 第 3 步：Claude 整理
-local function clean(transcript)
-  local key = readFile(CFG_DIR .. "/anthropic_key")
-  if not key then return fail("搵唔到 " .. CFG_DIR .. "/anthropic_key") end
+-- 將錄音交俾 Gemini，一次過轉文字兼整理
+local function process()
+  local key = readFile(CFG_DIR .. "/gemini_key")
+  if not key then return fail("搵唔到 " .. CFG_DIR .. "/gemini_key") end
   local prompt = readFile(CFG_DIR .. "/prompt.md")
   if not prompt then return fail("搵唔到 prompt.md") end
   prompt = prompt:gsub("{{STYLE}}", STYLES[M.config.style] or STYLES["口語"])
+  local audio = readFile(wavPath, true)
+  if not audio then return fail("搵唔到錄音檔") end
 
   local bodyPath = CFG_DIR .. "/request.json"
   writeFile(bodyPath, hs.json.encode({
-    model = M.config.claudeModel,
-    max_tokens = 8000,
-    output_config = { effort = M.config.effort },
-    fallbacks = "default",
-    system = prompt,
-    messages = { { role = "user", content = "<transcript>\n" .. transcript .. "\n</transcript>" } },
+    system_instruction = { parts = { { text = prompt } } },
+    contents = { {
+      role = "user",
+      parts = {
+        { text = "請整理呢段錄音。" },
+        { inline_data = { mime_type = "audio/wav", data = hs.base64.encode(audio) } },
+      },
+    } },
   }))
 
+  local url = "https://generativelanguage.googleapis.com/v1beta/models/"
+    .. M.config.model .. ":generateContent"
   hs.task.new("/usr/bin/curl", function(code, out)
     local resp = code == 0 and hs.json.decode(out) or nil
-    if not resp then
-      hs.alert.show("Claude 冇回應，已貼原文", 4)
-      return deliver(transcript)
-    end
-    if resp.type == "error" then
-      hs.alert.show("Claude 出錯：" .. tostring(resp.error and resp.error.message), 4)
-      return deliver(transcript)
-    end
-    if resp.stop_reason == "refusal" then return deliver(transcript) end
+    if not resp then return fail("Gemini 冇回應") end
+    if resp.error then return fail("Gemini 出錯：" .. tostring(resp.error.message)) end
+    local cand = resp.candidates and resp.candidates[1]
+    if not (cand and cand.content) then return fail("Gemini 冇俾到結果") end
     local parts = {}
-    for _, block in ipairs(resp.content or {}) do
-      if block.type == "text" then table.insert(parts, block.text) end
+    for _, part in ipairs(cand.content.parts or {}) do
+      if part.text and not part.thought then table.insert(parts, part.text) end
     end
     deliver((table.concat(parts):gsub("^%s+", ""):gsub("%s+$", "")))
   end, {
-    "-sS", "--max-time", "60", "https://api.anthropic.com/v1/messages",
+    "-sS", "--max-time", "90", url,
     "-H", "content-type: application/json",
-    "-H", "x-api-key: " .. key,
-    "-H", "anthropic-version: 2026-10-21",
-    "-H", "anthropic-beta: server-side-fallback-2026-07-01",
+    "-H", "x-goog-api-key: " .. key,
     "--data-binary", "@" .. bodyPath,
   }):start()
 end
 
--- 第 2 步：語音轉文字
-local function transcribe()
-  local function done(code, out, err)
-    if code ~= 0 then return fail("轉文字失敗：" .. tostring(err)) end
-    local text = out
-    if M.config.stt == "cloud" then
-      local resp = hs.json.decode(out)
-      text = resp and resp.text
-      if not text then return fail("轉文字失敗：" .. out) end
-    end
-    text = text:gsub("%s*\n%s*", " "):gsub("^%s+", ""):gsub("%s+$", "")
-    if text == "" then return fail("聽唔到嘢") end
-    clean(text)
-  end
-
-  if M.config.stt == "cloud" then
-    local key = readFile(CFG_DIR .. "/stt_key")
-    if not key then return fail("搵唔到 " .. CFG_DIR .. "/stt_key") end
-    local args = {
-      "-sS", "--max-time", "60", M.config.cloudUrl,
-      "-H", "Authorization: Bearer " .. key,
-      "-F", "file=@" .. wavPath,
-      "-F", "model=" .. M.config.cloudModel,
-      "-F", "prompt=" .. M.config.whisperPrompt,
-      "-F", "response_format=json",
-    }
-    if M.config.language ~= "auto" then
-      table.insert(args, "-F")
-      table.insert(args, "language=" .. M.config.language)
-    end
-    hs.task.new("/usr/bin/curl", done, args):start()
-  else
-    hs.task.new(M.config.whisperBin, done, {
-      "-m", M.config.whisperModel, "-f", wavPath,
-      "-l", M.config.language, "--prompt", M.config.whisperPrompt,
-      "-nt", "-np",
-    }):start()
-  end
-end
-
--- 第 1 步：錄音
+-- 錄音
 local escKey
 local function startRecording()
   hs.fs.mkdir(CFG_DIR)
@@ -167,7 +113,7 @@ local function startRecording()
   recTask = hs.task.new(M.config.rec, function()
     if state ~= "processing" then return end -- 已取消
     if hs.timer.secondsSinceEpoch() - recStart < 0.6 then return setStatus("idle") end
-    transcribe()
+    process()
   end, { "-q", "-c", "1", "-r", "16000", "-b", "16", wavPath })
   if not recTask:start() then return fail("開唔到 sox，有冇裝 sox？") end
   recStart = hs.timer.secondsSinceEpoch()

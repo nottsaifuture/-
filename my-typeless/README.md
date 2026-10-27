@@ -1,10 +1,10 @@
-# My Typeless（自製版）
+# My Typeless（自製版，用 Google Gemini）
 
-講嘢 → 轉文字 → Claude 刪走「嗯、呃、即係、咁」、處理講錯改口、補標點 → 貼出嚟就用得。
+講嘢 → Gemini 聽錄音、刪走「嗯、呃、即係、咁」、處理講錯改口、補標點 → 貼出嚟就用得。
 
 ```
-咪 ──► 語音轉文字 ──► Claude 整理 ──► 貼落游標位置
-       (whisper)      (prompt.md)
+Mac：  咪 ──► Gemini（聽 + 整理）──► 貼落游標位置
+手機： iPhone 聽寫 ──► Gemini（整理）──► 剪貼簿
 ```
 
 | 檔案 | 用途 |
@@ -14,6 +14,11 @@
 | `mac/install.sh` | Mac：一鍵安裝 |
 | `phone/README.md` | iPhone 捷徑（同 Android）設定步驟 |
 | `test-clean.sh` | 喺 Terminal 試整理效果 |
+
+## 需要
+
+- 一條免費 Gemini API key：https://aistudio.google.com/apikey（唔使綁信用卡）
+- Mac：Homebrew
 
 ## Mac 版
 
@@ -26,12 +31,9 @@ cd my-typeless/mac && ./install.sh
 用法：喺任何輸入框揿一下 **Fn** → 選單列變 🔴 → 講嘢 → 再揿 **Fn** → ⏳ → 文字自動貼出嚟。錄緊音揿 **Esc** 取消。選單列 🎙 可以轉「口語／書面語」。
 
 設定喺 `~/.hammerspoon/typeless.lua` 頂部：
+- `model`：預設 `gemini-3.8-flash`；撞到免費額度上限可以改做 `gemini-3.5-flash-lite`
+- `autoPaste = false`：淨係抄落剪貼簿，唔自動貼
 
-- `stt = "cloud"`：改用 Groq 雲端轉文字（快好多，有免費額度），將 Groq key 放入 `~/.config/my-typeless/stt_key`
-- `language = "yue"`：淨係講廣東話嘅話轉得準啲
-- `claudeModel = "claude-haiku-5-5"`：整理快啲、平好多
+## 私隱
 
-## 需要
-
-- Anthropic API key（https://console.anthropic.com）
-- Mac：Homebrew；本機轉文字模型約 1.6GB
+免費額度嘅內容 Google 可能會攞嚟改進佢哋嘅產品。敏感嘢（例如密碼、病歷）就唔好用呢個講。

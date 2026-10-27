@@ -12,7 +12,8 @@ Mac：  咪 ──► Gemini（聽 + 整理）──► 貼落游標位置
 | `prompt.md` | 整理規則（兩個版本共用，想改風格就改呢度） |
 | `mac/typeless.lua` | Mac：Hammerspoon 腳本，揿 Fn 開始／停止 |
 | `mac/install.sh` | Mac：一鍵安裝 |
-| `phone/README.md` | iPhone 捷徑（同 Android）設定步驟 |
+| `ios/` | iPhone 鍵盤 app：撳 🌐 揀「My Typeless」，再撳「整理」（安裝見 `ios/README.md`） |
+| `phone/README.md` | 唔想裝 app 嘅另一個做法：iPhone 捷徑（同 Android） |
 | `test-clean.sh` | 喺 Terminal 試整理效果 |
 
 ## 需要

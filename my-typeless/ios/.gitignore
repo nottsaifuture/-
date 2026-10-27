@@ -1,0 +1,6 @@
+Keyboard/Secrets.swift
+*.xcodeproj
+App/Info.plist
+Keyboard/Info.plist
+xcuserdata/
+DerivedData/

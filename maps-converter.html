@@ -60,6 +60,7 @@
       <div class="row">
         <button class="primary" id="copy">Copy</button>
         <a class="btn" id="open" target="_blank" rel="noopener">Open in Apple Maps</a>
+        <button id="copyText" hidden>Copy address</button>
       </div>
     </div>
     <div id="msg" role="status"></div>
@@ -71,6 +72,7 @@
       <li>Place links: <code>google.com/maps/place/Name/@22.28,114.15,17z</code></li>
       <li>Search links: <code>google.com/maps/search/coffee</code> or <code>?q=...</code></li>
       <li>Directions: <code>google.com/maps/dir/A/B</code> or <code>?saddr=...&amp;daddr=...</code></li>
+      <li>If Apple Maps doesn’t find the place, tap <strong>Copy address</strong> and paste it into Apple Maps’ search box.</li>
       <li>Plain coordinates like <code>22.2819, 114.1580</code> or a typed address.</li>
     </ul>
     <p><strong>Short links</strong> (<code>maps.app.goo.gl/…</code>) hide the location, and browsers block
@@ -91,6 +93,8 @@
     try { s = decodeURIComponent(s); } catch (e) {}
     return s.replace(/\+/g, ' ').trim();
   }
+  // An address has a comma or a house number / postcode digit, e.g. "Dale End, Birmingham B4 7LN".
+  function looksLikeAddress(s) { return /,/.test(s) || /\d/.test(s); }
   function isCoord(s) { return COORD.test(s || ''); }
   function normCoord(s) { var m = s.match(COORD); return m ? m[1] + ',' + m[2] : s; }
 
@@ -102,7 +106,8 @@
     var found = text.match(/https?:\/\/\S+/);
     if (!found) {
       // Not a URL: treat as coordinates or an address.
-      return isCoord(text) ? { ll: normCoord(text) } : { q: text };
+      if (isCoord(text)) return { ll: normCoord(text) };
+      return looksLikeAddress(text) ? { address: text } : { q: text };
     }
 
     var url;
@@ -170,11 +175,11 @@
 
   function toApple(r) {
     var u = new URL('https://maps.apple.com/');
-    ['saddr', 'daddr', 'q', 'll', 'z'].forEach(function (k) {
+    ['saddr', 'daddr', 'address', 'q', 'll', 'z'].forEach(function (k) {
       if (r[k] != null && r[k] !== '') u.searchParams.set(k, r[k]);
     });
     // Apple shows a pin for ll only when q is set; give coordinates a label.
-    if (r.ll && !r.q && !r.daddr) u.searchParams.set('q', r.ll);
+    if (r.ll && !r.q && !r.daddr && !r.address) u.searchParams.set('q', r.ll);
     return u.toString();
   }
 
@@ -182,7 +187,10 @@
 
   function convert() {
     try {
-      var link = toApple(parseGoogle($('in').value));
+      var parsed = parseGoogle($('in').value);
+      var link = toApple(parsed);
+      placeText = parsed.address || parsed.q || parsed.daddr || '';
+      $('copyText').hidden = !placeText;
       $('out').textContent = link;
       $('open').href = link;
       $('result').style.display = 'block';
@@ -209,13 +217,15 @@
     navigator.clipboard.readText().then(function (t) { $('in').value = t; convert(); })
       .catch(function () { show('Could not read the clipboard. Paste into the box instead.', 'err'); });
   };
-  $('copy').onclick = function () {
-    var t = $('out').textContent;
-    var done = function () { show('Copied!', 'ok'); };
+  var placeText = '';
+  $('copyText').onclick = function () { copyText(placeText, 'Address copied. Open Apple Maps and paste it into the search box.'); };
+  $('copy').onclick = function () { copyText($('out').textContent, 'Copied!'); };
+  function copyText(t, okMsg) {
+    var done = function () { show(okMsg, 'ok'); };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(t).then(done, function () { fallbackCopy(t); done(); });
     } else { fallbackCopy(t); done(); }
-  };
+  }
   function fallbackCopy(t) {
     var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta);
     ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta);

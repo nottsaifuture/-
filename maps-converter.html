@@ -76,6 +76,9 @@
     <p><strong>Short links</strong> (<code>maps.app.goo.gl/…</code>) hide the location, and browsers block
       this page from opening them. Open the short link first, then copy the full address from the
       browser bar and paste it here.</p>
+    <p><strong>Links with <code>ftid=</code> or <code>cid=</code></strong> (from “Copy link” in the Google Maps
+      iPhone app) only hold a Google place ID. Paste the place name or address instead, or open the place in
+      Google Maps in Safari and copy the longer link.</p>
   </details>
 </main>
 
@@ -149,7 +152,19 @@
     if (view) r.z = Math.round(parseFloat(view[3]));
     else if (p.get('z')) r.z = p.get('z');
 
-    if (!r.q && !r.ll) throw new Error('Could not find a place in that link.');
+    if (!r.q && !r.ll) {
+      // "Copy link" from Google Maps on iPhone gives ?ftid=0x…:0x… (or ?cid=…): only a Google place ID, no location.
+      var cid = p.get('cid'), ftid = p.get('ftid');
+      if (!cid && ftid && /:0x[0-9a-f]+$/i.test(ftid)) cid = BigInt(ftid.split(':')[1]).toString();
+      if (cid) {
+        var err = new Error('This link only has a Google place ID, with no name or location, so it cannot be converted directly. ' +
+          'Easiest fix: in Google Maps, copy the place name or address and paste that here instead. ' +
+          'Or open the link below in Safari, then copy the longer link from the address bar and paste it here.');
+        err.link = 'https://www.google.com/maps?cid=' + cid;
+        throw err;
+      }
+      throw new Error('Could not find a place in that link.');
+    }
     return r;
   }
 
@@ -175,6 +190,12 @@
     } catch (e) {
       $('result').style.display = 'none';
       show(e.message, 'err');
+      if (e.link) {
+        var a = document.createElement('a');
+        a.href = e.link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Open this place in Google Maps';
+        a.style.cssText = 'display:inline-block;margin-top:8px;color:var(--accent);font-weight:600';
+        $('msg').appendChild(document.createElement('br')); $('msg').appendChild(a);
+      }
     }
   }
 

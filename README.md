@@ -38,3 +38,7 @@
 新增注碼與回本計算器、21 張概念重點卡、已讀／未讀篩選、章節進度、專注閱讀模式及每課自動儲存筆記。筆記只保存在目前瀏覽器。
 
 [進入互動練習](https://nottsaifuture.github.io/-/#workshop)。計算器採用教學假設，不計費用、稅項、槓桿及交易滑價。
+
+## Google Maps → Apple Maps converter
+
+Open `maps-converter.html`, paste a Google Maps link, and get the matching Apple Maps link. It runs entirely in the browser. You can also pre-fill it with `maps-converter.html?url=<google link>`.

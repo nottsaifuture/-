@@ -30,7 +30,10 @@
     padding: 10px 16px; border-radius: 10px; font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; }
   button.primary, a.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
   button:disabled { opacity: .5; cursor: default; }
-  #result { margin-top: 18px; display: none; }
+  [hidden] { display: none !important; }
+  #result { margin-top: 18px; }
+  label.toggle { display: flex; align-items: center; gap: 8px; font-weight: 500; margin: 12px 0 0; cursor: pointer; }
+  label.toggle input { width: 20px; height: 20px; accent-color: var(--accent); margin: 0; }
   #out { word-break: break-all; padding: 12px; border-radius: 10px; background: var(--bg);
     border: 1px solid var(--border); font-family: ui-monospace, Menlo, monospace; font-size: .9rem; }
   #msg { margin-top: 12px; font-size: .95rem; }
@@ -48,13 +51,14 @@
   <div class="card">
     <label for="in">Google Maps link</label>
     <textarea id="in" placeholder="https://www.google.com/maps/place/..."></textarea>
+    <label class="toggle" for="walk"><input type="checkbox" id="walk" checked> Walking directions</label>
     <div class="row">
       <button class="primary" id="convert">Convert</button>
       <button id="paste">Paste</button>
       <button id="clear">Clear</button>
     </div>
 
-    <div id="result">
+    <div id="result" hidden>
       <label>Apple Maps link</label>
       <div id="out"></div>
       <div class="row">
@@ -72,6 +76,7 @@
       <li>Place links: <code>google.com/maps/place/Name/@22.28,114.15,17z</code></li>
       <li>Search links: <code>google.com/maps/search/coffee</code> or <code>?q=...</code></li>
       <li>Directions: <code>google.com/maps/dir/A/B</code> or <code>?saddr=...&amp;daddr=...</code></li>
+      <li><strong>Walking directions</strong> is on by default: the link opens a walking route from where you are. Turn it off to just show the place.</li>
       <li>If Apple Maps doesn’t find the place, tap <strong>Copy address</strong> and paste it into Apple Maps’ search box.</li>
       <li>Plain coordinates like <code>22.2819, 114.1580</code> or a typed address.</li>
     </ul>
@@ -173,8 +178,16 @@
     return r;
   }
 
-  function toApple(r) {
+  function toApple(r, walk) {
     var u = new URL('https://maps.apple.com/');
+    if (walk) {
+      // Walking directions from the current location (or saddr) to the place. dirflg=w = walking.
+      var to = r.daddr || r.ll || r.address || r.q;
+      if (r.saddr) u.searchParams.set('saddr', r.saddr);
+      u.searchParams.set('daddr', to);
+      u.searchParams.set('dirflg', 'w');
+      return u.toString();
+    }
     ['saddr', 'daddr', 'address', 'q', 'll', 'z'].forEach(function (k) {
       if (r[k] != null && r[k] !== '') u.searchParams.set(k, r[k]);
     });
@@ -188,15 +201,15 @@
   function convert() {
     try {
       var parsed = parseGoogle($('in').value);
-      var link = toApple(parsed);
+      var link = toApple(parsed, $('walk').checked);
       placeText = parsed.address || parsed.q || parsed.daddr || '';
       $('copyText').hidden = !placeText;
       $('out').textContent = link;
       $('open').href = link;
-      $('result').style.display = 'block';
+      $('result').hidden = false;
       show('');
     } catch (e) {
-      $('result').style.display = 'none';
+      $('result').hidden = true;
       show(e.message, 'err');
       if (e.link) {
         var a = document.createElement('a');
@@ -208,10 +221,15 @@
   }
 
   $('convert').onclick = convert;
+  try { if (localStorage.getItem('walk') === '0') $('walk').checked = false; } catch (e) {}
+  $('walk').onchange = function () {
+    try { localStorage.setItem('walk', this.checked ? '1' : '0'); } catch (e) {}
+    if (!$('result').hidden) convert();
+  };
   $('in').addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); convert(); }
   });
-  $('clear').onclick = function () { $('in').value = ''; $('result').style.display = 'none'; show(''); $('in').focus(); };
+  $('clear').onclick = function () { $('in').value = ''; $('result').hidden = true; show(''); $('in').focus(); };
   $('paste').onclick = function () {
     if (!navigator.clipboard || !navigator.clipboard.readText) { show('Your browser blocks paste here. Long-press the box and paste.', 'err'); return; }
     navigator.clipboard.readText().then(function (t) { $('in').value = t; convert(); })

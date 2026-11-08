@@ -245,6 +245,12 @@
     $('open').href = link;
     $('result').hidden = false;
     show('');
+    if (autoGo) {
+      // Opened from the iPhone Shortcut with &go=1: jump straight into the Apple Maps app.
+      autoGo = false;
+      show('Opening Apple Maps…', 'ok');
+      location.href = link.replace('https://maps.apple.com/', 'maps://');
+    }
   }
 
   function showError(e) {
@@ -273,7 +279,7 @@
     navigator.clipboard.readText().then(function (t) { $('in').value = t; convert(); })
       .catch(function () { show('Could not read the clipboard. Paste into the box instead.', 'err'); });
   };
-  var placeText = '';
+  var placeText = '', autoGo = false;
   $('copyText').onclick = function () { copyText(placeText, 'Address copied. Open Apple Maps and paste it into the search box.'); };
   $('copy').onclick = function () { copyText($('out').textContent, 'Copied!'); };
   function copyText(t, okMsg) {
@@ -288,7 +294,10 @@
   }
 
   // Support ?url=<google link> so the page can be used from a shortcut/bookmarklet.
-  var pre = new URLSearchParams(location.search).get('url');
+  // Add &go=1 to open Apple Maps straight away (used by the iPhone Shortcut).
+  var qs = new URLSearchParams(location.search);
+  var pre = qs.get('url');
+  autoGo = !!pre && qs.get('go') === '1';
   if (pre) { $('in').value = pre; convert(); }
 
   window.__parseGoogle = parseGoogle; window.__toApple = toApple; // for testing

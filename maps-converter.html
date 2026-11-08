@@ -119,6 +119,15 @@
 
     var url;
     try { url = new URL(found[0]); } catch (e) { throw new Error('That link does not look valid.'); }
+
+    // Shared from the Google Maps app, the text often holds the place name and address next to the link,
+    // e.g. "Bullring\nBirmingham B5 4BU\nhttps://maps.app.goo.gl/…". Short and place-ID links hide the
+    // location, so use that text when it is there.
+    var extra = text.replace(found[0], ' ').split(/\s*\n\s*/).map(function (x) { return x.trim(); })
+      .filter(function (x) { return x && !/^https?:/.test(x); }).join(', ').replace(/\s+/g, ' ').trim();
+    var hidden = /^(maps\.app\.goo\.gl|goo\.gl|g\.co)$/.test(url.hostname.replace(/^www\./, '')) ||
+      ((url.searchParams.get('ftid') || url.searchParams.get('cid')) && !url.searchParams.get('q') && !/\/maps\/(place|search|dir)\/|@-?\d/.test(url.pathname));
+    if (hidden && extra.length >= 3) return looksLikeAddress(extra) ? { address: extra } : { q: extra };
     var host = url.hostname.replace(/^www\./, '');
 
     if (/^(maps\.app\.goo\.gl|goo\.gl|g\.co)$/.test(host)) {

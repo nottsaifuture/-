@@ -119,6 +119,10 @@
 
     var url;
     try { url = new URL(found[0]); } catch (e) { throw new Error('That link does not look valid.'); }
+    // In the UK/EU a short link can open Google's cookie page first: consent.google.com/ml?continue=<real Maps link>
+    for (var i = 0; i < 3 && /^consent\.google\./.test(url.hostname) && url.searchParams.get('continue'); i++) {
+      try { url = new URL(url.searchParams.get('continue')); } catch (e) { break; }
+    }
 
     // Shared from the Google Maps app, the text often holds the place name and address next to the link,
     // e.g. "Bullring\nBirmingham B5 4BU\nhttps://maps.app.goo.gl/…". Short and place-ID links hide the

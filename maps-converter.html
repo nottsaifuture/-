@@ -92,6 +92,8 @@
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
+  // Your Cloudflare Worker address (see maps-resolver-worker.js). Leave empty to turn share-link lookup off.
+  var RESOLVER = '';
   var COORD = /^\s*(-?\d{1,3}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)\s*$/;
 
   function clean(s) {
@@ -120,7 +122,9 @@
     var host = url.hostname.replace(/^www\./, '');
 
     if (/^(maps\.app\.goo\.gl|goo\.gl|g\.co)$/.test(host)) {
-      throw new Error('This is a short link. Open it in your browser first, then copy the full link from the address bar and paste it here.');
+      var se = new Error('This is a short link. Open it in your browser first, then copy the full link from the address bar and paste it here.');
+      se.lookup = url.href;
+      throw se;
     }
     if (!/(^|\.)google\.[a-z.]+$/.test(host) && !/^maps\.google\./.test(host)) {
       throw new Error('This does not look like a Google Maps link.');
@@ -171,6 +175,7 @@
           'Easiest fix: in Google Maps, copy the place name or address and paste that here instead. ' +
           'Or open the link below in Safari, then copy the longer link from the address bar and paste it here.');
         err.link = 'https://www.google.com/maps?cid=' + cid;
+        err.lookup = url.href;
         throw err;
       }
       throw new Error('Could not find a place in that link.');
@@ -198,25 +203,58 @@
 
   function show(msg, kind) { $('msg').textContent = msg || ''; $('msg').className = kind || ''; }
 
+  // Ask the Cloudflare Worker which place a share link points to. Answers are kept so toggling walking is instant.
+  var lookups = {}, pending = 0;
+  function lookUp(link) {
+    if (lookups[link]) return Promise.resolve(lookups[link]);
+    return fetch(RESOLVER.replace(/\/$/, '') + '/?url=' + encodeURIComponent(link))
+      .then(function (res) { return res.json(); })
+      .then(function (d) {
+        if (!d.ok) throw new Error(d.error || 'Not found');
+        var r = {}, label = [d.name, d.address].filter(Boolean).join(', ');
+        if (d.lat != null) { r.ll = d.lat + ',' + d.lng; if (label) r.q = label; }
+        else if (label) r.address = label;
+        return (lookups[link] = r);
+      });
+  }
+
   function convert() {
+    var job = ++pending;
     try {
-      var parsed = parseGoogle($('in').value);
-      var link = toApple(parsed, $('walk').checked);
-      placeText = parsed.address || parsed.q || parsed.daddr || '';
-      $('copyText').hidden = !placeText;
-      $('out').textContent = link;
-      $('open').href = link;
-      $('result').hidden = false;
-      show('');
+      render(parseGoogle($('in').value));
     } catch (e) {
-      $('result').hidden = true;
-      show(e.message, 'err');
-      if (e.link) {
-        var a = document.createElement('a');
-        a.href = e.link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Open this place in Google Maps';
-        a.style.cssText = 'display:inline-block;margin-top:8px;color:var(--accent);font-weight:600';
-        $('msg').appendChild(document.createElement('br')); $('msg').appendChild(a);
+      if (e.lookup && RESOLVER) {
+        $('result').hidden = true;
+        show('Looking up this share link…', '');
+        lookUp(e.lookup).then(function (r) {
+          if (job === pending) render(r);
+        }, function () {
+          if (job === pending) showError(e);
+        });
+        return;
       }
+      showError(e);
+    }
+  }
+
+  function render(parsed) {
+    var link = toApple(parsed, $('walk').checked);
+    placeText = parsed.address || parsed.q || parsed.daddr || '';
+    $('copyText').hidden = !placeText;
+    $('out').textContent = link;
+    $('open').href = link;
+    $('result').hidden = false;
+    show('');
+  }
+
+  function showError(e) {
+    $('result').hidden = true;
+    show(e.message, 'err');
+    if (e.link) {
+      var a = document.createElement('a');
+      a.href = e.link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Open this place in Google Maps';
+      a.style.cssText = 'display:inline-block;margin-top:8px;color:var(--accent);font-weight:600';
+      $('msg').appendChild(document.createElement('br')); $('msg').appendChild(a);
     }
   }
 

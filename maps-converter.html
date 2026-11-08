@@ -93,7 +93,7 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   // Your Cloudflare Worker address (see maps-resolver-worker.js). Leave empty to turn share-link lookup off.
-  var RESOLVER = '';
+  var RESOLVER = 'https://maps-resolver.wilsonaifuture.workers.dev';
   var COORD = /^\s*(-?\d{1,3}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)\s*$/;
 
   function clean(s) {

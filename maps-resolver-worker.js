@@ -102,7 +102,10 @@ export default {
       res = await fetch(current.href, { headers: HEADERS, redirect: 'manual' });
       const next = res.headers.get('Location');
       if (!(res.status >= 300 && res.status < 400 && next)) break;
-      current = new URL(next, current);
+      const target = new URL(next, current);
+      // Google blocks servers with a "sorry, unusual traffic" page: keep what the earlier hops gave us.
+      if (target.pathname.startsWith('/sorry')) { res = null; break; }
+      current = target;
       // The consent page carries the real link in ?continue=
       if (current.hostname === 'consent.google.com' && current.searchParams.get('continue')) {
         current = new URL(current.searchParams.get('continue'));

@@ -16,6 +16,11 @@ live, dependency-free implementation. Source: pound0423/claude-animated-text (MI
 - `assets/index.html` — the original specimen page. Every effect is a `make(root, words)` function in the
   `FX` array (search `{id:'<id>'`); motion text is in `PROMPT.<id>.m`; palettes in `const SCH`.
   Opening it in a browser gives the full interactive gallery (type your words, zoom, ratio, colours).
+- `assets/previews/preview-1..4.jpg` — gallery screenshots (1: 登場+流動, 2: 切換+強調, 3: 空間+歌詞 MV,
+  4: 綜藝字卡+恐怖片). Show these when the user wants to browse looks before choosing.
+- `assets/samples/*.mp4` — 7 ready-made 1920×1080 30fps clips (sample words, default scheme), one per
+  group except Flow: 01 Burst, 17 Split-flap, 28 Neon-flicker, 33 Prism-roll, 41 Karaoke-fill,
+  49 Pop-caption, 57 Dying-bulb. Hand one over as a quick example; render new ones for the user's own words.
 - `scripts/make_player.py` — turns one effect into a standalone looping HTML page.
 - `scripts/render.py` — frame-exact MP4 export via headless Chrome + ffmpeg.
 
